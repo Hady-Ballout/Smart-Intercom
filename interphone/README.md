@@ -4,8 +4,6 @@ Cloud-connected door entry for apartment buildings. A visitor scans the QR stick
 picks an apartment, and the resident sees and hears them on their phone and taps **Unlock**.
 An ESP32 at the door pulses a relay that opens a 12 V lock.
 
-Full design: [docs/PLAN.md](docs/PLAN.md). Hardware brief: [docs/PROJECT_CONTEXT.md](docs/PROJECT_CONTEXT.md).
-
 ```
 visitor phone ──HTTPS──▶ Supabase (Postgres + edge functions + realtime) ◀──push/realtime── resident PWA
                                   ▲ 1 s HTTPS poll, device token
@@ -18,7 +16,6 @@ visitor phone ──HTTPS──▶ Supabase (Postgres + edge functions + realtim
 |---|---|---|
 | Firmware state machine, buzzer patterns, pin maps | `firmware/src` | done, 12 native unit tests pass |
 | Wi-Fi + backend polling on a FreeRTOS task | `firmware/src/net_client.cpp` | done, compile-checked; needs the real build (`pio run`) |
-| Wokwi breadboard simulation | `firmware/wokwi` | done |
 | Database schema, RLS, demo seed | `supabase/migrations`, `supabase/seed.sql` | done, applied + RLS tested on Postgres 16 |
 | Edge functions `ring`, `respond`, `device-poll` | `supabase/functions` | done, `deno check` clean |
 | Virtual door controller (no hardware) | `tools/virtual-device` | done |
@@ -35,9 +32,7 @@ cd firmware
 pio test -e native          # unit tests for the door logic
 pio run  -e esp32devkit     # full ESP32 build (needs the PlatformIO ESP32 toolchain, downloads once)
 ```
-Then follow `firmware/wokwi/README.md` to press the button and watch the relay in the browser.
-
-Serial keys while it runs (Wokwi or real board): `u` unlock, `d` deny, `s` status.
+Serial keys while it runs: `u` unlock, `d` deny, `s` status.
 
 ### 2. Backend locally
 
@@ -74,9 +69,6 @@ curl -X POST $F/respond -H "authorization: Bearer $TOKEN" -H 'content-type: appl
      -d '{"visit_id":"<visit_id from above>","action":"unlock"}'
 ```
 Within a second terminal A prints `door -> UNLOCKING *** RELAY ON ***`.
-To do the same with the simulated ESP32 instead, put your project's functions URL and the device
-token in `firmware/secrets.ini` (see `secrets.ini.example`) and run Wokwi in VS Code — the Wokwi
-browser editor cannot reach a `localhost` backend, so for the browser use a deployed Supabase project.
 
 ### 4. Web app: scan, ring, unlock
 
@@ -115,5 +107,5 @@ firmware/   PlatformIO project (ESP32 DevKit V1 default, ESP32-S3 alternate, nat
 supabase/   migrations, seed, edge functions, config
 web/        visitor page + resident app (Vite + React), see web/README.md
 tools/      virtual-device (fake door controller), make-qr (door sticker), docker-pull-host (image pull workaround)
-docs/       PLAN.md, PROJECT_CONTEXT.md (hardware)
+docs/       Software plan and project documentation
 ```

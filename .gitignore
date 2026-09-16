@@ -17,3 +17,18 @@ interphone/supabase/.temp/
 interphone/firmware/wokwi/browser-project/
 **/test-results/
 **/playwright-report/
+
+# Private hardware design and reproduction artifacts.
+# Keep firmware source (including src/pins.h) tracked so production builds work.
+/fritzing versions/
+/*.fzz
+/*.fzpz
+/*_netlist.xml
+/netlist to be checked by gpt.xml
+/Component List.xlsx
+/Interphone_Shopping_List_v2.pdf
+/Interphone Project one_bb.png
+/PROJECT_CONTEXT.md
+/interphone/docs/PLAN.md
+/interphone/docs/PROJECT_CONTEXT.md
+/interphone/firmware/wokwi/
